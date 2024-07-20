@@ -16,7 +16,12 @@ public:
 
 
 private:
-	wxTextCtrl* m_textCtrl;
+	wxTextCtrl* display;
 
+	void OnButtonClicked(wxCommandEvent&);
+	void CreateUI();
+	void EvaluateExpression();
+
+	wxDECLARE_EVENT_TABLE();
 };
 
