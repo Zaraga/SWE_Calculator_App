@@ -12,6 +12,7 @@ wxIMPLEMENT_APP(App);
 
 class MyFrame : public wxFrame {
 public:
+	MyFrame();
 	MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
 
 

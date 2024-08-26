@@ -31,7 +31,9 @@ enum {
 	ID_BUTTON_CLEAR,
 	ID_BUTTON_BACKSPACE,
 	ID_BUTTON_DECIMAL,
-	ID_BUTTON_NEGATIVE
+	ID_BUTTON_NEGATIVE,
+	ID_BUTTON_CLOSEDPARENT,
+	ID_BUTTON_OPENPARENT
 };
 
 // Event table to map events to handler methods
@@ -58,8 +60,16 @@ wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
 	EVT_BUTTON(ID_BUTTON_CLEAR, MyFrame::OnButtonClicked)
 	EVT_BUTTON(ID_BUTTON_BACKSPACE, MyFrame::OnButtonClicked)
 	EVT_BUTTON(ID_BUTTON_DECIMAL, MyFrame::OnButtonClicked)
-	EVT_BUTTON(ID_BUTTON_NEGATIVE, MyFrame::OnButtonClicked)	
+	EVT_BUTTON(ID_BUTTON_NEGATIVE, MyFrame::OnButtonClicked)
+	EVT_BUTTON(ID_BUTTON_CLOSEDPARENT, MyFrame::OnButtonClicked)
+	EVT_BUTTON(ID_BUTTON_OPENPARENT, MyFrame::OnButtonClicked)
 wxEND_EVENT_TABLE()
+
+MyFrame::MyFrame()
+	: wxFrame(nullptr, wxID_ANY, "Default Title", wxDefaultPosition, wxSize(300, 400)) {
+	// Initialize the UI for the frame
+	CreateUI();
+}
 
 
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -77,7 +87,7 @@ void MyFrame::CreateUI() {
 	vbox->Add(display, 0, wxEXPAND | wxTOP | wxBOTTOM, 4);
 
 	// Grid sizer for buttons
-	wxGridSizer* grid = new wxGridSizer(6, 4, 3, 3); // 6 rows, 4 columns
+	wxGridSizer* grid = new wxGridSizer(7, 4, 3, 3); // 6 rows, 4 columns
 
 	// Add buttons to the grid
 	grid->Add(new wxButton(this, ID_BUTTON_7, "7"), 0, wxEXPAND);
@@ -108,6 +118,9 @@ void MyFrame::CreateUI() {
 	grid->Add(new wxButton(this, ID_BUTTON_NEGATIVE, "-/+"), 0, wxEXPAND);
 	grid->Add(new wxButton(this, ID_BUTTON_CLEAR, "C"), 0, wxEXPAND);
 	grid->Add(new wxButton(this, ID_BUTTON_BACKSPACE, "<"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_OPENPARENT, "("), 0, wxEXPAND);
+
+	grid->Add(new wxButton(this, ID_BUTTON_CLOSEDPARENT, ")"), 0, wxEXPAND);
 
 	vbox->Add(grid, 1, wxEXPAND);
 	SetSizer(vbox);
@@ -135,7 +148,7 @@ void MyFrame::OnButtonClicked(wxCommandEvent& event) {
 		break;
 		// Append unary operator labels to the display with a space
 	case ID_BUTTON_SIN: case ID_BUTTON_COS: case ID_BUTTON_TAN:
-		display->AppendText(label + " ");
+		display->AppendText(label);
 		break;
 		// Clear the display
 	case ID_BUTTON_CLEAR:
@@ -161,12 +174,17 @@ void MyFrame::OnButtonClicked(wxCommandEvent& event) {
 	case ID_BUTTON_NEGATIVE:
 		display->AppendText("-");
 		break;
+	case ID_BUTTON_CLOSEDPARENT:
+		display->AppendText(")");
+		break;
+	case ID_BUTTON_OPENPARENT:
+		display->AppendText("(");
+		break;
 	default:
 		break;
 	}
 }
 
-// Method to evaluate the expression in the display
 void MyFrame::EvaluateExpression() {
 	wxString input = display->GetValue();
 	std::stack<double> values;
@@ -175,6 +193,7 @@ void MyFrame::EvaluateExpression() {
 	auto get_precedence = [](const wxString& op) {
 		if (op == "+" || op == "-") return 1;
 		if (op == "*" || op == "/" || op == "%") return 2;
+		if (op == "cos" || op == "sin" || op == "log") return 3; // Higher precedence for functions
 		return 0;
 		};
 
@@ -193,6 +212,13 @@ void MyFrame::EvaluateExpression() {
 		return 0.0;
 		};
 
+	auto apply_function = [](double value, const wxString& func) -> double {
+		if (func == "cos") return cos(value);
+		if (func == "sin") return sin(value);
+		if (func == "log") return log(value);
+		throw std::runtime_error("Unknown function: " + std::string(func.mb_str()));
+		};
+
 	try {
 		for (size_t i = 0; i < input.Length(); ++i) {
 			wxChar ch = input[i];
@@ -208,6 +234,37 @@ void MyFrame::EvaluateExpression() {
 			}
 			else if (wxIsspace(ch)) {
 				continue; // skip spaces
+			}
+			else if (wxIsalpha(ch)) { // Detect function names (e.g., cos, sin, log)
+				size_t start = i;
+				while (i < input.Length() && wxIsalpha(input[i])) ++i;
+				wxString funcStr = input.Mid(start, i - start);
+				if (input[i] == '(') {
+					size_t openBrackets = 1;
+					size_t startExpression = ++i;
+					while (i < input.Length() && openBrackets != 0) {
+						if (input[i] == '(') ++openBrackets;
+						if (input[i] == ')') --openBrackets;
+						++i;
+					}
+					wxString funcArgument = input.Mid(startExpression, i - startExpression - 1); // Get the argument inside the parentheses
+
+					// Allocate the temporary frame dynamically
+					MyFrame* tempFrame = new MyFrame();
+					tempFrame->display = new wxTextCtrl(tempFrame, wxID_ANY, funcArgument);
+					tempFrame->EvaluateExpression(); // Recursively evaluate the argument
+
+					double result;
+					if (!tempFrame->display->GetValue().ToDouble(&result)) throw std::runtime_error("Error evaluating function argument");
+
+					values.push(apply_function(result, funcStr)); // Apply the function to the result
+
+					// Clean up: delete the temporary frame
+					delete tempFrame;
+				}
+				else {
+					throw std::runtime_error("Invalid function format");
+				}
 			}
 			else {
 				wxString op(1, ch);
