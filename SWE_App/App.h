@@ -16,12 +16,15 @@ public:
 	MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
 
 
-private:
 	wxTextCtrl* display;
+	void EvaluateExpression();
+
+private:
+	
 
 	void OnButtonClicked(wxCommandEvent&);
 	void CreateUI();
-	void EvaluateExpression();
+	
 
 	wxDECLARE_EVENT_TABLE();
 };
