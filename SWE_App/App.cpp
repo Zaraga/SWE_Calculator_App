@@ -193,7 +193,7 @@ void MyFrame::EvaluateExpression() {
 	auto get_precedence = [](const wxString& op) {
 		if (op == "+" || op == "-") return 1;
 		if (op == "*" || op == "/" || op == "%") return 2;
-		if (op == "cos" || op == "sin" || op == "log") return 3; // Higher precedence for functions
+		if (op == "cos" || op == "sin" || op == "tan") return 3; // Higher precedence for functions
 		return 0;
 		};
 
@@ -213,9 +213,9 @@ void MyFrame::EvaluateExpression() {
 		};
 
 	auto apply_function = [](double value, const wxString& func) -> double {
-		if (func == "cos") return cos(value);
-		if (func == "sin") return sin(value);
-		if (func == "log") return log(value);
+		if (func == "Cos") return cos(value);
+		if (func == "Sin") return sin(value);
+		if (func == "Tan") return tan(value);
 		throw std::runtime_error("Unknown function: " + std::string(func.mb_str()));
 		};
 
