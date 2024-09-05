@@ -78,74 +78,6 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
 	CreateUI();
 }
 
-wxButton* Factory::CreateButton(wxWindow* parent, int id, const wxString& label) {
-	return new wxButton(parent, id, label);
-}
-
-wxButton* Factory::CreateAddButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_ADD, "+");
-}
-
-wxButton* Factory::CreateSubtractButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_SUBTRACT, "-");
-}
-
-wxButton* Factory::CreateMultiplyButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_MULTIPLY, "*");
-}
-
-wxButton* Factory::CreateDivideButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_DIVIDE, "/");
-}
-
-wxButton* Factory::CreateModButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_MOD, "%");
-}
-
-wxButton* Factory::CreateCosButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_COS, "Cos");
-}
-
-wxButton* Factory::CreateSinButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_SIN, "Sin");
-}
-
-wxButton* Factory::CreateTanButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_TAN, "Tan");
-}
-
-wxButton* Factory::CreateOpenParentButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_OPENPARENT, "(");
-}
-
-wxButton* Factory::CreateClosedParentButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_CLOSEDPARENT, ")");
-}
-
-wxButton* Factory::CreateClearButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_CLEAR, "C");
-}
-
-wxButton* Factory::CreateBackSpaceButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_BACKSPACE, "<");
-}
-
-wxButton* Factory::CreateEqualButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_EQUAL, "=");
-}
-
-wxButton* Factory::CreateDecimalButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_DECIMAL, ".");
-}
-
-wxButton* Factory::CreateNegativeButton(wxWindow* parent) {
-	return CreateButton(parent, ID_BUTTON_CLEAR, "-/+");
-}
-
-wxButton* Factory::CreateNumberButton(wxWindow* parent, int number) {
-	return CreateButton(parent, ID_BUTTON_0 + number, std::to_string(number));
-}
-
 void MyFrame::CreateUI() {
 	// Vertical box sizer for layout
 	wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
@@ -158,37 +90,37 @@ void MyFrame::CreateUI() {
 	wxGridSizer* grid = new wxGridSizer(7, 4, 3, 3); // 6 rows, 4 columns
 
 	// Add buttons to the grid
-	grid->Add(Factory::CreateNumberButton(this, 7), 0, wxEXPAND);
-	grid->Add(Factory::CreateNumberButton(this, 8), 0, wxEXPAND);
-	grid->Add(Factory::CreateNumberButton(this, 9), 0, wxEXPAND);
-	grid->Add(Factory::CreateAddButton(this), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_7, "7"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_8, "8"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_9, "9"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_ADD, "+"), 0, wxEXPAND);
 
-	grid->Add(Factory::CreateNumberButton(this, 4), 0, wxEXPAND);
-	grid->Add(Factory::CreateNumberButton(this, 5), 0, wxEXPAND);
-	grid->Add(Factory::CreateNumberButton(this, 6), 0, wxEXPAND);
-	grid->Add(Factory::CreateSubtractButton(this), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_4, "4"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_5, "5"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_6, "6"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_SUBTRACT, "-"), 0, wxEXPAND);
 
-	grid->Add(Factory::CreateNumberButton(this, 1), 0, wxEXPAND);
-	grid->Add(Factory::CreateNumberButton(this, 2), 0, wxEXPAND);
-	grid->Add(Factory::CreateNumberButton(this, 3), 0, wxEXPAND);
-	grid->Add(Factory::CreateMultiplyButton(this), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_1, "1"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_2, "2"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_3, "3"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_MULTIPLY, "*"), 0, wxEXPAND);
 
-	grid->Add(Factory::CreateNumberButton(this, 0), 0, wxEXPAND);
-	grid->Add(Factory::CreateDecimalButton(this), 0, wxEXPAND);
-	grid->Add(Factory::CreateEqualButton(this), 0, wxEXPAND);
-	grid->Add(Factory::CreateDivideButton(this), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_0, "0"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_DECIMAL, "."), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_EQUAL, "="), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_DIVIDE, "/"), 0, wxEXPAND);
 
-	grid->Add(Factory::CreateSinButton(this), 0, wxEXPAND);
-	grid->Add(Factory::CreateCosButton(this), 0, wxEXPAND);
-	grid->Add(Factory::CreateTanButton(this), 0, wxEXPAND);
-	grid->Add(Factory::CreateModButton(this), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_SIN, "sin"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_COS, "cos"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_TAN, "tan"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_MOD, "%"), 0, wxEXPAND);
 
-	grid->Add(Factory::CreateNegativeButton(this), 0, wxEXPAND);
-	grid->Add(Factory::CreateClearButton(this), 0, wxEXPAND);
-	grid->Add(Factory::CreateBackSpaceButton(this), 0, wxEXPAND);
-	grid->Add(Factory::CreateOpenParentButton(this), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_NEGATIVE, "-/+"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_CLEAR, "C"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_BACKSPACE, "<"), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_OPENPARENT, "("), 0, wxEXPAND);
 
-	grid->Add(Factory::CreateClosedParentButton(this), 0, wxEXPAND);
+	grid->Add(new wxButton(this, ID_BUTTON_CLOSEDPARENT, ")"), 0, wxEXPAND);
 
 	vbox->Add(grid, 1, wxEXPAND);
 	SetSizer(vbox);
